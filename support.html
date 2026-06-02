@@ -273,24 +273,139 @@ summary{
   .actions{flex-direction:column}
   .btn{width:100%}
 }
+
+/* Единая закреплённая шапка и мобильная навигация */
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:rgba(9,11,24,.88);
+  border-bottom:1px solid rgba(255,255,255,.09);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.site-header .nav{
+  position:relative;
+  min-height:72px;
+  padding:12px 0;
+  flex-direction:row;
+  align-items:center;
+}
+.nav-links a.active{
+  color:var(--text);
+  background:rgba(124,247,212,.10);
+  border-color:rgba(124,247,212,.38);
+}
+.menu-toggle{
+  display:none;
+  width:44px;
+  height:44px;
+  margin-left:auto;
+  padding:0;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.07);
+  color:var(--text);
+  cursor:pointer;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:6px;
+}
+.menu-toggle span{
+  width:19px;
+  height:2px;
+  background:currentColor;
+  border-radius:4px;
+  transition:transform .2s ease, opacity .2s ease;
+}
+.menu-toggle[aria-expanded="true"] span:first-child{transform:translateY(4px) rotate(45deg)}
+.menu-toggle[aria-expanded="true"] span:last-child{transform:translateY(-4px) rotate(-45deg)}
+.email-text{
+  color:var(--text);
+  word-break:break-word;
+}
+.copy-email{
+  display:inline-flex;
+  align-items:center;
+  margin:10px 0 0;
+  min-height:40px;
+  padding:9px 13px;
+  border-radius:13px;
+  border:1px solid rgba(124,247,212,.28);
+  background:rgba(124,247,212,.09);
+  color:var(--accent);
+  cursor:pointer;
+  font-size:13px;
+  font-weight:800;
+}
+.copy-email:hover{background:rgba(124,247,212,.16)}
+.email-block{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+@media (max-width:860px){
+  .site-header .wrapper{width:min(100% - 22px,1120px)}
+  .site-header .nav{
+    flex-direction:row;
+    align-items:center;
+    min-height:68px;
+    padding:10px 0;
+  }
+  .logo-mark{width:42px;height:42px;border-radius:15px}
+  .menu-toggle{display:flex}
+  .site-header .nav-links{
+    position:absolute;
+    top:calc(100% + 8px);
+    left:0;
+    right:0;
+    display:grid;
+    gap:6px;
+    padding:8px;
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:18px;
+    background:#11152b;
+    box-shadow:0 22px 56px rgba(0,0,0,.45);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transform:translateY(-7px);
+    transition:opacity .2s ease, transform .2s ease, visibility .2s ease;
+  }
+  .site-header .nav-links[data-open="true"]{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transform:translateY(0);
+  }
+  .site-header .nav-links a{
+    display:block;
+    width:100%;
+    padding:13px 14px;
+    border-radius:12px;
+  }
+}
+
 </style>
 </head>
 <body>
+  <header class="site-header">
   <div class="wrapper">
     <nav class="nav" aria-label="Основная навигация">
       <a class="logo" href="index.html" aria-label="На главную">
         <span class="logo-mark">₽</span>
         <span>ПлатиМеньше</span>
       </a>
-      <div class="nav-links">
-        <a href="index.html">Главная</a>
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="support.html">Support URL</a>
-        <a href="marketing.html">Marketing URL</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Открыть меню">
+        <span></span><span></span>
+      </button>
+      <div class="nav-links" id="site-menu" data-open="false">
+          <a href="index.html">Главная</a>
+          <a href="privacy-policy.html">Privacy Policy</a>
+          <a class="active" href="support.html" aria-current="page">Support URL</a>
+          <a href="marketing.html">Marketing URL</a>
       </div>
     </nav>
   </div>
-  
+</header>
+
 <main class="wrapper">
   <section class="hero">
     <div class="hero-card reveal">
@@ -309,7 +424,7 @@ summary{
   <section class="grid">
     <article class="mini-card reveal">
       <h3>Email поддержки</h3>
-      <p><a href="mailto:douglasburchqrk898@gmail.com">douglasburchqrk898@gmail.com</a></p>
+      <div class="email-block"><span class="email-text">douglasburchqrk898@gmail.com</span><button class="copy-email" type="button" data-copy-email="douglasburchqrk898@gmail.com">Скопировать email</button></div>
     </article>
     <article class="mini-card reveal">
       <h3>Что указать</h3>
@@ -334,7 +449,7 @@ summary{
       </details>
       <details>
         <summary>Как связаться с разработчиком?</summary>
-        <p>Напишите на email: <a href="mailto:douglasburchqrk898@gmail.com">douglasburchqrk898@gmail.com</a>.</p>
+        <p>Напишите на email: <span class="email-text">douglasburchqrk898@gmail.com</span>.</p>
       </details>
     </div>
   </section>
@@ -342,24 +457,49 @@ summary{
 
   <footer class="footer wrapper">
     <div>© <span data-year></span> CRISTAL DEV. Приложение: ПлатиМеньше.</div>
-    <div>Аккаунт разработчика: <a href="mailto:douglasburchqrk898@gmail.com">douglasburchqrk898@gmail.com</a></div>
+    <div>Аккаунт разработчика: <span class="email-text">douglasburchqrk898@gmail.com</span></div>
   </footer>
   
 <script>
   const yearTarget = document.querySelector('[data-year]');
   if (yearTarget) yearTarget.textContent = new Date().getFullYear();
 
+  const menuToggle = document.querySelector('.menu-toggle');
+  const siteMenu = document.getElementById('site-menu');
+
+  if (menuToggle && siteMenu) {
+    const closeMenu = () => {
+      siteMenu.dataset.open = 'false';
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.setAttribute('aria-label', 'Открыть меню');
+    };
+
+    menuToggle.addEventListener('click', () => {
+      const nextState = siteMenu.dataset.open !== 'true';
+      siteMenu.dataset.open = String(nextState);
+      menuToggle.setAttribute('aria-expanded', String(nextState));
+      menuToggle.setAttribute('aria-label', nextState ? 'Закрыть меню' : 'Открыть меню');
+    });
+
+    siteMenu.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.nav')) closeMenu();
+    });
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 860) closeMenu();
+    });
+  }
+
   document.querySelectorAll('[data-copy-email]').forEach((button) => {
     button.addEventListener('click', async () => {
-      const email = button.getAttribute('data-copy-email');
+      const originalText = button.textContent;
       try {
-        await navigator.clipboard.writeText(email);
-        const old = button.textContent;
+        await navigator.clipboard.writeText(button.dataset.copyEmail);
         button.textContent = 'Email скопирован';
-        setTimeout(() => button.textContent = old, 1600);
-      } catch (e) {
-        window.location.href = 'mailto:' + email;
+      } catch (error) {
+        button.textContent = 'Скопируйте вручную';
       }
+      setTimeout(() => { button.textContent = originalText; }, 1700);
     });
   });
 </script>
