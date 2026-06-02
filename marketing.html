@@ -273,24 +273,51 @@ summary{
   .actions{flex-direction:column}
   .btn{width:100%}
 }
+
+/* Закреплённая шапка и компактное мобильное меню */
+.site-header{position:sticky;top:0;z-index:1000;background:rgba(9,11,24,.78);border-bottom:1px solid rgba(255,255,255,.09);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.site-header .nav{position:relative;min-height:76px;padding:12px 0;flex-direction:row;align-items:center}
+.nav-links a.active{color:var(--text);border-color:rgba(124,247,212,.42);background:rgba(124,247,212,.11)}
+.menu-toggle{display:none;width:46px;height:46px;margin-left:auto;border-radius:15px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:6px}
+.menu-toggle span{display:block;width:20px;height:2px;border-radius:3px;background:var(--text);transition:transform .22s ease}
+.menu-toggle[aria-expanded="true"] span:first-child{transform:translateY(4px) rotate(45deg)}
+.menu-toggle[aria-expanded="true"] span:last-child{transform:translateY(-4px) rotate(-45deg)}
+.email-text{color:var(--text);word-break:break-word}
+.copy-email{display:inline-flex;margin-left:9px;padding:7px 11px;border-radius:999px;border:1px solid rgba(124,247,212,.28);background:rgba(124,247,212,.09);color:var(--accent);cursor:pointer;font-size:13px;font-weight:750;transition:.2s ease}
+.copy-email:hover{background:rgba(124,247,212,.16)}
+@media (max-width:860px){
+  .site-header .nav{flex-direction:row;align-items:center;padding:10px 0;min-height:68px}
+  .logo-mark{width:42px;height:42px;border-radius:15px}
+  .menu-toggle{display:flex}
+  .site-header .nav-links{position:absolute;top:calc(100% + 10px);left:0;right:0;display:grid;gap:7px;padding:8px;border:1px solid rgba(255,255,255,.14);border-radius:20px;background:#12162d;box-shadow:0 22px 56px rgba(0,0,0,.38);opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .2s ease,transform .2s ease,visibility .2s ease}
+  .site-header .nav-links[data-open="true"]{opacity:1;visibility:visible;transform:translateY(0)}
+  .site-header .nav-links a{padding:13px 14px;border-radius:13px}
+}
+@media (max-width:520px){.copy-email{display:flex;width:max-content;margin:10px 0 0}}
+
 </style>
 </head>
 <body>
-  <div class="wrapper">
-    <nav class="nav" aria-label="Основная навигация">
-      <a class="logo" href="index.html" aria-label="На главную">
-        <span class="logo-mark">₽</span>
-        <span>ПлатиМеньше</span>
-      </a>
-      <div class="nav-links">
-        <a href="index.html">Главная</a>
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="support.html">Support URL</a>
-        <a href="marketing.html">Marketing URL</a>
-      </div>
-    </nav>
-  </div>
-  
+
+  <header class="site-header">
+    <div class="wrapper">
+      <nav class="nav" aria-label="Основная навигация">
+        <a class="logo" href="index.html" aria-label="На главную">
+          <span class="logo-mark">₽</span><span>ПлатиМеньше</span>
+        </a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Открыть меню">
+          <span></span><span></span>
+        </button>
+        <div class="nav-links" id="site-menu" data-open="false">
+          <a href="index.html">Главная</a>
+          <a href="privacy-policy.html">Privacy Policy</a>
+          <a href="support.html">Support URL</a>
+          <a class="active" href="marketing.html" aria-current="page">Marketing URL</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
 <main class="wrapper">
   <section class="hero">
     <div class="hero-card reveal">
@@ -344,7 +371,7 @@ summary{
         <li>Сейчас приложение не содержит платных функций и подписок.</li>
         <li>Будущая монетизация планируется открыто и честно.</li>
         <li>Пользовательская ценность остается главным критерием развития.</li>
-        <li>Разработчик доступен для обратной связи по email: <a href="mailto:douglasburchqrk898@gmail.com">douglasburchqrk898@gmail.com</a>.</li>
+        <li>Разработчик доступен для обратной связи по email: <span class="email-text">douglasburchqrk898@gmail.com</span> <button class="copy-email" type="button" data-copy-email="douglasburchqrk898@gmail.com">Скопировать email</button>.</li>
       </ul>
     </div>
   </section>
@@ -352,24 +379,34 @@ summary{
 
   <footer class="footer wrapper">
     <div>© <span data-year></span> CRISTAL DEV. Приложение: ПлатиМеньше.</div>
-    <div>Аккаунт разработчика: <a href="mailto:douglasburchqrk898@gmail.com">douglasburchqrk898@gmail.com</a></div>
+    <div>Аккаунт разработчика: <span class="email-text">douglasburchqrk898@gmail.com</span></div>
   </footer>
   
 <script>
   const yearTarget = document.querySelector('[data-year]');
   if (yearTarget) yearTarget.textContent = new Date().getFullYear();
 
+  const menuToggle = document.querySelector('.menu-toggle');
+  const siteMenu = document.getElementById('site-menu');
+  if (menuToggle && siteMenu) {
+    menuToggle.addEventListener('click', () => {
+      const isOpen = siteMenu.dataset.open === 'true';
+      siteMenu.dataset.open = String(!isOpen);
+      menuToggle.setAttribute('aria-expanded', String(!isOpen));
+      menuToggle.setAttribute('aria-label', isOpen ? 'Открыть меню' : 'Закрыть меню');
+    });
+  }
+
   document.querySelectorAll('[data-copy-email]').forEach((button) => {
     button.addEventListener('click', async () => {
-      const email = button.getAttribute('data-copy-email');
+      const initialText = button.textContent;
       try {
-        await navigator.clipboard.writeText(email);
-        const old = button.textContent;
-        button.textContent = 'Email скопирован';
-        setTimeout(() => button.textContent = old, 1600);
-      } catch (e) {
-        window.location.href = 'mailto:' + email;
+        await navigator.clipboard.writeText(button.dataset.copyEmail);
+        button.textContent = 'Скопировано';
+      } catch (error) {
+        button.textContent = 'Скопируйте вручную';
       }
+      setTimeout(() => button.textContent = initialText, 1800);
     });
   });
 </script>
